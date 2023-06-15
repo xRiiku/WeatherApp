@@ -18,6 +18,7 @@ function App() {
           setWeatherData(null)
           throw new Error('City not found')
         }
+        setError('')
         return response.json();
       })
         .then((data) => setWeatherData(data))
