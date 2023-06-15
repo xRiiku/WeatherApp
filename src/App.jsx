@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { API_KEY } from './Api';
+import spinner from './assets/Spinner.svg'
+import search from './assets/Search.svg'
 import './App.css';
 
 function App() {
@@ -27,7 +29,8 @@ function App() {
   }
 
   return (
-    <div>
+    <div className='parent'>
+    <div className='search'>
       <input
         type="text"
         value={location}
@@ -35,16 +38,26 @@ function App() {
           setLocation(event.target.value)
         }}
         placeholder="Write your city name"
+        onKeyUp={(event) => {
+          if (event.key === 'Enter') {
+            fetchData()
+          }
+        }}
       />
-      <button onClick={fetchData}>Search</button>
+      <img src={search} alt='search' onClick={fetchData}></img>
+      </div>
       {weatherData && (
         <div>
-          <h2>Weather in {weatherData.name}</h2>
-          <p>Temperature: {weatherData.main.temp} ºC</p>
-          <p>Description: {weatherData.weather[0].description}</p>
+          <h2>{weatherData.name}</h2>
+          <p>{Math.round(weatherData.main.temp)} ºC</p>
+          <p>{weatherData.weather[0].main}</p>
         </div>
       )}
-      {error && <p>Error: {error}</p>}
+      {error && (
+        <div className='error'>
+          <img src={spinner} alt='spinner'></img>
+          <p>{error}</p>
+        </div>)}
     </div>
   )
 }
