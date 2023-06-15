@@ -47,10 +47,32 @@ function App() {
       <img src={search} alt='search' onClick={fetchData}></img>
       </div>
       {weatherData && (
-        <div>
-          <h2>{weatherData.name}</h2>
-          <p>{Math.round(weatherData.main.temp)} ºC</p>
-          <p>{weatherData.weather[0].main}</p>
+        <div className='weatherParent'>
+          <div className='topInfoParent'>
+          <div className='cityName'>
+            <span>{weatherData.name}</span>
+          </div>
+            <div className='temperature'>
+              <img src={`http://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`} alt="icon" />
+              <span>{Math.round(weatherData.main.temp)}º</span>
+            </div>
+            <div className='description'>
+              <span>{weatherData.weather[0].description}</span>
+            </div>
+          </div>
+          
+            <div className='separator'></div>
+            
+            <div className='otherData'>
+              <div className='feelMax'>
+                <span>Feels like: {Math.round(weatherData.main.feels_like)}º</span>
+                <span>Max temp: {Math.round(weatherData.main.temp_max)}º</span>
+              </div>
+              <div className='humWind'>
+                <span>Humidity: {weatherData.main.humidity}%</span>
+                <span>Wind: {Math.round(weatherData.wind.speed *3.6)}km/h</span>
+              </div>
+            </div>
         </div>
       )}
       {error && (

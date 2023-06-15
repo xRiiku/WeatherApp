@@ -1,8 +1,25 @@
 .parent {
   max-width: 1280px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+.weatherParent{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: left;
+  margin-top: 2rem;
+  max-width: 100%;
+  background-color: aquamarine;
+  padding: 3rem;
+  border-radius: 20px;
 }
 
 .search{
@@ -10,6 +27,7 @@
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
+  width: 100%;
 }
 .search img{
   width: 30px;
@@ -18,11 +36,58 @@
 
 .search input{
   height: 2rem;
-  width: 15rem;
+  width: 12rem;
   border-radius: 10px;
   outline: none;
   text-transform: capitalize;
   text-align: center;
+}
+
+.topInfoParent{
+  display: flex;
+  padding-top: 2rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.cityName{
+  font-size: 36pt;
+}
+
+.temperature{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 25pt;
+}
+.temperature img{
+  height: 80px;
+}
+
+.description{
+  padding-bottom: 2rem;
+  font-size: 15pt;
+}
+
+.separator{
+  border: 1px solid rgb(206, 204, 204);
+  width: 100%;
+}
+
+.otherData{
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  padding-top: 2rem;
+}
+
+.feelMax, .humWind{
+  display: flex;
+  gap: 4rem;
+  justify-content: center;
+  align-items: center;
 }
 
 .error{
