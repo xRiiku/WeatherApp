@@ -14,7 +14,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  text-align: left;
+  text-align: center;
   margin-top: 2rem;
   max-width: 100%;
   background-color: rgb(160 224 255);
@@ -82,6 +82,7 @@
 .description {
   padding-bottom: 2rem;
   font-size: 15pt;
+  text-transform: capitalize;
 }
 
 .separator {
@@ -102,6 +103,23 @@
   gap: 4rem;
   justify-content: center;
   align-items: center;
+}
+
+.hoursForecastContainer {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  padding-top: 2rem;
+}
+
+.hoursForecast {
+  margin-right: 10px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 0.5rem;
 }
 
 .error {

@@ -7,26 +7,48 @@ import './App.css';
 function App() {
   const [location, setLocation] = useState('');
   const [weatherData, setWeatherData] = useState(null);
+  const [daysData, setDaysData] = useState(null);
   const [error, setError] = useState('');
 
   const fetchData = () => {
     if (location) {
       fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${location}&APPID=${API_KEY}&units=metric`
+        `https://api.openweathermap.org/data/2.5/weather?q=${location}&APPID=${API_KEY}&units=metric&lang=es`
       )
         .then((response) => {
           if (!response.ok) {
             setLocation('');
             setWeatherData(null);
-            throw new Error('City not found');
+            throw new Error('No se ha encontrado la ciudad');
           }
           setError('');
           return response.json();
         })
-        .then((data) => setWeatherData(data))
+        .then((data) => {
+          setWeatherData(data);
+
+          const { lat, lon } = data.coord;
+
+          fetch(
+            `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=es`
+          )
+            .then((response) => {
+              if (!response.ok) {
+                setLocation('');
+                setDaysData(null);
+                throw new Error('No se ha encontrado la ciudad');
+              }
+              setError('');
+              return response.json();
+            })
+            .then((data) => setDaysData(data))
+            .catch((error) => setError(error.message));
+        })
         .catch((error) => setError(error.message));
     }
   };
+
+  const hourlyForecast = daysData && daysData.list && daysData.list.slice(0, 5);
 
   return (
     <div className="parent">
@@ -38,7 +60,7 @@ function App() {
             onChange={(event) => {
               setLocation(event.target.value);
             }}
-            placeholder="Write your city name"
+            placeholder="Escribe tu ubicación"
             onKeyUp={(event) => {
               if (event.key === 'Enter') {
                 fetchData();
@@ -72,14 +94,33 @@ function App() {
 
           <div className="otherData">
             <div className="feelMax">
-              <span>Feels like: {Math.round(weatherData.main.feels_like)}º</span>
+              <span>Sensación: {Math.round(weatherData.main.feels_like)}º</span>
               <span>Max temp: {Math.round(weatherData.main.temp_max)}º</span>
             </div>
             <div className="humWind">
-              <span>Humidity: {weatherData.main.humidity}%</span>
-              <span>Wind: {Math.round(weatherData.wind.speed * 3.6)}km/h</span>
+              <span>Humedad: {weatherData.main.humidity}%</span>
+              <span>Viento: {Math.round(weatherData.wind.speed * 3.6)}km/h</span>
             </div>
           </div>
+
+          {hourlyForecast && (
+            <div>
+              {hourlyForecast.map((hours) => (
+                <div className='hoursForecastContainer' key={hours.dt}>
+                  <div className='hoursForecast'>
+                    <span>{hours.dt_txt.slice(8, 10)}/{hours.dt_txt.slice(5, 7)}/{hours.dt_txt.slice(0, 4)}</span>
+                    <span>{hours.dt_txt.slice(11, 16)}</span>
+                    <span>{Math.round(hours.main.temp)}º</span>
+                    <img
+                      src={`http://openweathermap.org/img/w/${hours.weather[0].icon}.png`}
+                      alt="icon"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
         </div>
       )}
       {error && (
