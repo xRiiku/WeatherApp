@@ -60,12 +60,11 @@ function App() {
   /* al utilizar esta expresión, se verifica que daysData y daysData.list existan 
   antes de aplicar el método slice(0, 5) para obtener los primeros 5 elementos de daysData.list*/
 
-  // Mapeo de los tipos de clima a las imágenes de fondo correspondientes
+  // tipos de clima e imágenes de fondo correspondientes
   const weatherBackgrounds = {
     Clear: sunnyBackground,
     Rain: rainyBackground,
     Clouds: cloudyBackground,
-    // Agrega más tipos de clima y sus imágenes de fondo aquí
   };
 
   // Determina el fondo actual basado en el tipo de clima
