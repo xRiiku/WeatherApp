@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { API_KEY } from './Api';
 import spinner from './assets/Spinner.svg';
 import search from './assets/Search.svg';
+import sunnyBackground from './assets/sunny.jpg';
+import rainyBackground from './assets/rainy.jpg';
+import cloudyBackground from './assets/cloudy.jpg';
 import './App.css';
 
 function App() {
@@ -9,9 +12,12 @@ function App() {
   const [weatherData, setWeatherData] = useState(null);
   const [daysData, setDaysData] = useState(null);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = () => {
     if (location) {
+      setIsLoading(true);
+
       fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${location}&APPID=${API_KEY}&units=metric&lang=es`
       )
@@ -42,13 +48,37 @@ function App() {
               return response.json();
             })
             .then((data) => setDaysData(data))
-            .catch((error) => setError(error.message));
+            .catch((error) => setError(error.message))
+            .finally(() => setIsLoading(false));
         })
-        .catch((error) => setError(error.message));
+        .catch((error) => setError(error.message))
+        .finally(() => setIsLoading(false));
     }
   };
 
   const hourlyForecast = daysData && daysData.list && daysData.list.slice(0, 5);
+  /* al utilizar esta expresión, se verifica que daysData y daysData.list existan 
+  antes de aplicar el método slice(0, 5) para obtener los primeros 5 elementos de daysData.list*/
+
+  // Mapeo de los tipos de clima a las imágenes de fondo correspondientes
+  const weatherBackgrounds = {
+    Clear: sunnyBackground,
+    Rain: rainyBackground,
+    Clouds: cloudyBackground,
+    // Agrega más tipos de clima y sus imágenes de fondo aquí
+  };
+
+  // Determina el fondo actual basado en el tipo de clima
+  const getCurrentBackground = () => {
+    if (weatherData && weatherData.weather && weatherData.weather.length > 0) {
+      const weatherType = weatherData.weather[0].main;
+      return weatherBackgrounds[weatherType] || null;
+    }
+    return null;
+  };
+
+  const currentBackground = getCurrentBackground();
+
 
   return (
     <div className="parent">
@@ -72,8 +102,13 @@ function App() {
           </div>
         </label>
       </div>
+      {isLoading && (
+        <div className="loading">
+          <img src={spinner} alt="spinner" />
+        </div>
+      )}
       {weatherData && (
-        <div className="weatherParent">
+        <div className="weatherParent" style={{ backgroundImage: `url(${currentBackground})` }}>
           <div className="topInfoParent">
             <div className="cityName">
               <span>{weatherData.name}</span>
@@ -106,8 +141,8 @@ function App() {
           {hourlyForecast && (
             <div>
               {hourlyForecast.map((hours) => (
-                <div className='hoursForecastContainer' key={hours.dt}>
-                  <div className='hoursForecast'>
+                <div className="hoursForecastContainer" key={hours.dt}>
+                  <div className="hoursForecast">
                     <span>{hours.dt_txt.slice(8, 10)}/{hours.dt_txt.slice(5, 7)}/{hours.dt_txt.slice(0, 4)}</span>
                     <span>{hours.dt_txt.slice(11, 16)}</span>
                     <span>{Math.round(hours.main.temp)}º</span>
@@ -120,12 +155,10 @@ function App() {
               ))}
             </div>
           )}
-
         </div>
       )}
       {error && (
         <div className="error">
-          <img src={spinner} alt="spinner" />
           <p>{error}</p>
         </div>
       )}
